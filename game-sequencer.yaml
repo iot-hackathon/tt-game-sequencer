@@ -1,0 +1,98 @@
+# Game Sequence
+swagger: '2.0'
+info:
+  title: My table tennis game sequencer API
+  description: My TT game sequence API feeds the microservice game sequencer which is responsible to evaluate which player scored.  
+  version: "0.9.0"
+# the domain of the service
+host: none
+# array of all schemes that your API supports
+schemes:
+  - https
+  - http
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /servicePrepare:
+    x-swagger-router-controller: gameseqctrl
+    post:
+      operationId: serviceHit
+      summary: Who will serve next
+      parameters:
+        - name: side
+          in: body
+          description: Which side serves the ball (left or right)
+          required: true
+          schema:
+            $ref: '#/definitions/servicePrepInfo'
+      responses:
+        200:
+          description: successful
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /hit:
+    x-swagger-router-controller: gameseqctrl
+    post:
+      operationId: hit
+      summary: ball hits anything
+      parameters:
+        - name: field
+          in: body
+          description: hit info
+          required: true
+          schema: 
+            $ref: '#/definitions/tableHitInfo'
+      responses:
+        200:
+          description: An array of products
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+# tableHitInfo         
+  tableHitInfo:
+    type: object
+    required:
+      - sourceSensor
+      - seqCount
+      - hitTime
+    properties:
+      hitSource:
+        type: string
+      leftOrRight:
+        type: string
+      tableField:
+        type: string
+      sourceSensor:
+        type: string      
+      seqCount: 
+        type: integer
+      hitTime:
+        type: integer
+# serviceHitInfo         
+  servicePrepInfo:
+    type: object
+    required:
+      - tableLeftRightPlayer
+      - triggerTime
+    properties:
+      tableLeftRightPlayer:
+        type: string
+      triggerTime:
+        type: integer
+# Error definition        
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string

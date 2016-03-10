@@ -12,10 +12,10 @@
  * IMPORTS
  * ==================
  */
-var express = require('express');        // Express Middleware
-var cfenv = require('cfenv');            // Cloud Foundry Environment
-var bodyParser = require('body-parser'); // Body Parser to get that POST data from requests
-//var http = require('http');
+var express = require('express');                     // Express Middleware
+var cfenv = require('cfenv');                         // Cloud Foundry Environment
+var bodyParser = require('body-parser');              // Body Parser to get that POST data from requests
+var hitQueue = require('./controllers/hitQueue.js');  // Hit Queue
 
 // Create Express application
 var app = express();
@@ -63,8 +63,10 @@ app.post("/hit", jsonParser, function(req, res) {
 
     console.log("DEBUG: Incoming request at Post /hit called with request: " + JSON.stringify(req.body));
 
+
+
     // Check whether the incoming JSON conforms to the required format
-    if(req.body.hitTime && req.body.seqCount && req.body.sourceSensor) {
+    if(req.body.hitTime && req.body.seqCount >= 0 && req.body.sourceSensor) {
 
         // Minimal data is available for now, start building the JSON object
         console.log("DEBUG: Received event with hitTime, seqCount, sourceSensor\n");
@@ -94,7 +96,7 @@ app.post("/hit", jsonParser, function(req, res) {
 
 
         // Asynchronously call the "insert into queue" function to store the event
-        //insertIntoQueue(ttHit);
+        //hitQueue.insertIntoQueue(ttHit);
 
         // Save event to queue
 
@@ -104,11 +106,13 @@ app.post("/hit", jsonParser, function(req, res) {
 
         // Conclusive -> Send conclusion and delete the queue
 
-        res.status(200).send("Received the hit\n");
+        console.log("DEBUG: Returning with 200");
+        res.status(200).send();
         return;
 
     } else {
         // Input is not correct, deliver an error
+        console.log("DEBUG: Invalid JSON or no JSON supplied");
         res.status(400).send("The supplied JSON does not conform to the expected object for declaring a 'hit'\n");
         return;
     }

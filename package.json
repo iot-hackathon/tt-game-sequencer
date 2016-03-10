@@ -4,7 +4,7 @@
   "description": "TT Game Sequencer provides an API for table tennis events to evaluate what happens during table tennis.",
   "main": "index.js",
   "engine" :  {
-    "node" : "^4.0.0"
+    "node" : "^4.2.0"
   },
   "keywords": [
     "swagger"

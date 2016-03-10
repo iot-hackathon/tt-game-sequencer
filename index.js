@@ -32,9 +32,23 @@ console.log("DEBUG: Server Port is " + serverPort);
 // ==================================
 //          Express Routes
 // ==================================
+
+// *************
+// GET    / 
+// *************
 app.get('/', function(req, res) {
   console.log("DEBUG: Main page called (get on /)");
   res.send('<h1>hello world</h1>');
+});
+
+
+// *************
+// POST   /hit
+// *************
+app.post("/hit", function(req, res) {
+    console.log("DEBUG: Incoming request at Post /hit called with request: " + JSON.stringify(req.body));
+    console.log("DEBUG: Post /hit called with payload: " + req.body);
+    res.end();
 });
 
 // serve the files out of ./public as our main files // TODO discuss, whether to use this

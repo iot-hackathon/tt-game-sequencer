@@ -1,8 +1,11 @@
 {
   "name": "my-table-tennis-game-sequencer-api",
-  "version": "0.9.0",
-  "description": "My TT game sequence API feeds the microservice game sequencer which is responsible to evaluate which player scored.",
+  "version": "0.0.1",
+  "description": "TT Game Sequencer provides an API for table tennis events to evaluate what happens during table tennis.",
   "main": "index.js",
+  "engine" :  {
+    "node" : "^4.0.0"
+  },
   "keywords": [
     "swagger"
   ],
@@ -12,5 +15,8 @@
     "connect": "^3.2.0",
     "js-yaml": "^3.3.0",
     "swagger-tools": "0.9.*"
+  },
+  "scripts" : {
+    "start" : "node index.js"
   }
 }

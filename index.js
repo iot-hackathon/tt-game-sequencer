@@ -61,11 +61,68 @@ app.post("/hit", jsonParser, function(req, res) {
         res.status(409).send("Request does not contain json data");
     }    
 
-    console.log("DEBUG: Structure of req object: " + req.body);
     console.log("DEBUG: Incoming request at Post /hit called with request: " + JSON.stringify(req.body));
-    console.log("DEBUG: Post /hit called with payload: " + req.body);
-    res.end();
+
+    // Check whether the incoming JSON conforms to the required format
+    if(req.body.hitTime && req.body.seqCount && req.body.sourceSensor) {
+
+        // Minimal data is available for now, start building the JSON object
+        console.log("DEBUG: Received event with hitTime, seqCount, sourceSensor\n");
+
+        var ttHit = {
+            "hitTime" : req.body.hitTime,
+            "seqCount" : req.body.seqCount,
+            "sourceSensor" : req.body.sourceSensor,
+            hitSource : "unknown",
+            leftOrRight : "unknown",
+            tableField : "unknown"
+        };
+
+        // Check for optional properties
+        if(req.body.hitSource) {
+            console.log("DEBUG: Event " + req.body.seqCount + " also includes the optional parameter 'hitSource'\n");
+            ttHit.hitSource = req.body.hitSource;
+        }
+        if(req.body.leftOrRight) {
+            console.log("DEBUG: Event " + req.body.seqCount + " also includes the optional parameter 'leftOrRight'\n");
+            ttHit.leftOrRight = req.body.leftOrRight;
+        }
+        if(req.body.tableField) {
+            console.log("DEBUG: Event " + req.body.seqCount + " also includes the optional parameter 'tableField'\n");
+            ttHit.tableField = req.body.tableField;
+        }
+
+
+        // Asynchronously call the "insert into queue" function to store the event
+        //insertIntoQueue(ttHit);
+
+        // Save event to queue
+
+        // Analyze the Queue and Decide what happened
+
+        // Inconclusive -> wait for other events
+
+        // Conclusive -> Send conclusion and delete the queue
+
+        res.status(200).send("Received the hit\n");
+        return;
+
+    } else {
+        // Input is not correct, deliver an error
+        res.status(400).send("The supplied JSON does not conform to the expected object for declaring a 'hit'\n");
+        return;
+    }
+
+    // TODO decide what to do in the very end
+    res.status(400).send("Reached final branch, probably an error\n");
 });
+
+
+// ==================================
+//          Express Routes
+// ==================================
+
+
 
 // serve the files out of ./public as our main files // TODO discuss, whether to use this
 //app.use(express.static(__dirname + '/public'));

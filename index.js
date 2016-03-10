@@ -42,7 +42,7 @@ console.log("DEBUG: Server Port is " + serverPort);
 // *************
 app.get('/', function(req, res) {
   console.log("DEBUG: Main page called (get on /)");
-  res.send('<h1>hello world</h1>');
+  res.send('<h1>Kizomba Gang rules!</h1>');
 });
 
 
@@ -96,7 +96,7 @@ app.post("/hit", jsonParser, function(req, res) {
 
 
         // Asynchronously call the "insert into queue" function to store the event
-        //hitQueue.insertIntoQueue(ttHit);
+        hitQueue.newHit(ttHit);
 
         // Save event to queue
 

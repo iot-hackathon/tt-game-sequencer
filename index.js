@@ -1,77 +1,49 @@
+/* Main application file for the Table Tennis Game Sequencer (ttgs)
+ * 
+ * The ttgs receives events from the game and evaluates what happened. It will send this data to the Table Tennis Judge for evaluation
+ *
+ * © 2016 IBM Corp.
+ * @author: Sebastian Wegmann
+ */
+
 'use strict';
 
-var app = require('connect')();
-//var app = express(); // use express instead? 
-var http = require('http');
-var swaggerTools = require('swagger-tools');
-var jsyaml = require('js-yaml');
-var fs = require('fs');
-var cfenv = require('cfenv');
+/* ==================
+ * IMPORTS
+ * ==================
+ */
+var express = require('express'); // Express Middleware
+var cfenv = require('cfenv');     // Cloud Foundry Environment
 
-// get the app environment from Cloud Foundry
-var appEnv = cfenv.getAppEnv();
-var serverPort = 8080;
+//var http = require('http');
 
-// swaggerRouter configuration
-var options = {
-  swaggerUi: '/swagger.json',
-  controllers: './controllers',
-  useStubs: process.env.NODE_ENV === 'development' ? true : false // Conditionally turn on stubs (mock mode)
-};
-
-// The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
-var spec = fs.readFileSync('./api/swagger.yaml', 'utf8');
-var swaggerDoc = jsyaml.safeLoad(spec);
-
-// Initialize the Swagger middleware
-swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
-  // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
-  app.use(middleware.swaggerMetadata());
-
-  // Validate Swagger requests
-  app.use(middleware.swaggerValidator());
-
-  // Route validated requests to appropriate controller
-  app.use(middleware.swaggerRouter(options));
-
-  // Serve the Swagger documents and Swagger UI
-  app.use(middleware.swaggerUi());
-
-  // Start the server
-  http.createServer(app).listen(appEnv.port, function () {
-    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
-  });
-});
-
-
-
-/*
-//------------------------------------------------------------------------------
-// node.js starter application for Bluemix
-//------------------------------------------------------------------------------
-
-// This application uses express as its web server
-// for more info, see: http://expressjs.com
-var express = require('express');
-
-// cfenv provides access to your Cloud Foundry environment
-// for more info, see: https://www.npmjs.com/package/cfenv
-var cfenv = require('cfenv');
-
-// create a new express server
+// Create Express application
 var app = express();
 
-// serve the files out of ./public as our main files
-app.use(express.static(__dirname + '/public'));
-
-// get the app environment from Cloud Foundry
+// Set the port of the application. Default to 8080 if it cannot be retrieved from cfenv.
 var appEnv = cfenv.getAppEnv();
 
-// start server on the specified port and binding host
-app.listen(appEnv.port, '0.0.0.0', function() {
+if(!appEnv) {
+  console.log("DEBUG: appEnv not set, seems we are not running on Bluemix right now");
+}
+var serverPort = appEnv.port || 8080;
+console.log("DEBUG: Server Port is " + serverPort);
 
-  // print a message when the server starts listening
-  console.log("server starting on " + appEnv.url);
+// ==================================
+//          Express Routes
+// ==================================
+app.get('/', function(req, res) {
+  console.log("DEBUG: Main page called (get on /)");
+  res.send('<h1>hello world</h1>');
 });
-*/
+
+// serve the files out of ./public as our main files // TODO discuss, whether to use this
+//app.use(express.static(__dirname + '/public'));
+
+// start server on the specified port and binding host
+app.listen(serverPort, '0.0.0.0', function() {
+    // print a message when the server starts listening
+    console.log("Server starting on " + appEnv.url);
+});
+
+

@@ -146,7 +146,7 @@ app.post("/servicePrepare", jsonParser, function(req, res) {
     if(req.body.tableLeftRightPlayer) {
         // Minimal data is available for now, start building the JSON object
         var ttServicePrepare = {
-            "playerToServer": req.body.tableLeftRightPlayer,
+            "playerToServe": req.body.tableLeftRightPlayer,
             "timeTrigger": req.body.timeTrigger
         }
 

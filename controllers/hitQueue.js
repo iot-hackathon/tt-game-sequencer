@@ -48,16 +48,18 @@ function hitComparator(hitA, hitB) {
 // *****
 function newHit(ttHit) {
 
-    console.log("DEBUG: Entering newHit\n");
+    console.log("DEBUG: Entering newHit");
 
-    console.log("DEBUG: Pushing into queue. queue has " + queue.length + " elements.\n");
+    console.log("DEBUG: Pushing into queue. queue has " + queue.length + " elements.");
     queue.push(ttHit);
 
-    console.log("DEBUG: Sorting the queue. The queue has " + queue.length + " elements.\n");
+    console.log("DEBUG: Sorting the queue. The queue has " + queue.length + " elements.");
     queue.sort(hitComparator);
 
-    //console.log("DEBUG: Printing the queue: " + JSON.stringify(queue, null, 4));
-    //console.log("DEBUG: Leaving newHit\n");
+    console.log("DEBUG: Check if the queue is stable enough for evaluation.");
+    evaluateQueueStability();
+    console.log("DEBUG: Leaving newHit");
+
 }
 
 // *****
@@ -73,24 +75,24 @@ function evaluateQueueStability() {
     for(var i = 1; i<queue.length; i++) {
         var nextCount = initialCount + i;
         if(!(nextCount == queue[i].seqCount)) {
-            console.log("DEBUG: Expected the element at position " + i + " to have the sequence count of " + nextCount + " but found " + queue[i].seqCount +  " instead.\n");
+            console.log("DEBUG: Expected the element at position " + i + " to have the sequence count of " + nextCount + " but found " + queue[i].seqCount +  " instead.");
             wellOrderd = false;
             return;
         } else {
-            console.log("DEBUG: Sequence is ordered so far…\n");
+            console.log("DEBUG: Sequence is ordered so far…");
         }
     }
 
-    console.log("DEBUG: Sequence is completely ordered, calling the evaluator\n");
-
+    console.log("DEBUG: Sequence is completely ordered, calling the evaluator");
     evaluator();
-    console.log("DEBUG: Test statement for async state of call. Should be called immediately\n");
+    console.log("DEBUG: Test statement for async state of call. Should be called immediately");
 }
 
 // *****
 // Check the queue whether it contains events which lead to a complete game sequence 
 // *****
 function evaluator() {
+    console.log("DEBUG: Entering evaluator");
 
     var state = 0;
 
@@ -101,21 +103,21 @@ function evaluator() {
             if(queue[i].leftOrRight == "left" && server == "left") {
                 state = 1;
                 // go on
-                console.log("DEBUG: Left player served and played to left side first. We continue.\n");
+                console.log("DEBUG: Left player served and played to left side first. We continue.");
             } else if(queue[i].leftOrRight == "right" && server == "left") {
                 // point for right. Exit
-                console.log("DEBUG: Left player served and played directly to the right side. Point for player right.\n");
+                console.log("DEBUG: Left player served and played directly to the right side. Point for player right.");
                 // call the other micro service
                 return;
             } else if(queue[i].leftOrRight == "left" && server == "right") {
                 // point for left. Exit
-                console.log("DEBUG: Right player served and played directly to the left side. Point for player left.\n");
+                console.log("DEBUG: Right player served and played directly to the left side. Point for player left.");
                 // call the other micro service
                 return;
             } else if(queue[i].leftOrRight == "right" && server == "right") {
                 state = 1;
                 // go on
-                console.log("DEBUG: Right player served and played to right side first. We continue.\n");
+                console.log("DEBUG: Right player served and played to right side first. We continue.");
             }             
         } 
         // State 1: Player hit his side first
@@ -123,20 +125,20 @@ function evaluator() {
 
             if(queue[i].leftOrRight == "left" && server == "left") {
                 // point for right. Exit
-                console.log("DEBUG: Left player hit his side twice. Point for player right.\n");
+                console.log("DEBUG: Left player hit his side twice. Point for player right.");
                 // TODO call the other micro service
                 return;
             } else if(queue[i].leftOrRight == "right" && server == "left") {
                 // go on
                 state = 2;
-                console.log("DEBUG: Left player played a correct serve. We continue.\n");
+                console.log("DEBUG: Left player played a correct serve. We continue.");
             } else if(queue[i].leftOrRight == "left" && server == "right") {
                 // go on
                 state = 3;
-                console.log("DEBUG: Right player played a correct serve. We continue.\n");
+                console.log("DEBUG: Right player played a correct serve. We continue.");
             } else if(queue[i].leftOrRight == "right" && server == "right") {
                 // point for left. Exit
-                console.log("DEBUG: Right player hit his side twice. Point for player left.\n");
+                console.log("DEBUG: Right player hit his side twice. Point for player left.");
                 // TODO call the other micro service
                 return;
             }
@@ -145,26 +147,26 @@ function evaluator() {
         else if(state === 2) {
             if(queue[i].leftOrRight == "right") {
                 // point for left. Exit.
-                console.log("DEBUG: Player right played the ball onto his side. Point for left.\n");
+                console.log("DEBUG: Player right played the ball onto his side. Point for left.");
                 // TODO call the other micro service
                 return;
             } else if(queue[i].leftOrRight == "left") {
                 // go on
                 state = 3;
-                console.log("DEBUG: Player right played the ball onto the other side. We continue.\n");
+                console.log("DEBUG: Player right played the ball onto the other side. We continue.");
             }
         }
         // State 3: Normal game mode. Next player to hit is left
         else if(state === 3) {
             if(queue[i].leftOrRight == "left") {
                 // point for right. Exit.
-                console.log("DEBUG: Player left played the ball onto his side. Point for right.\n");
+                console.log("DEBUG: Player left played the ball onto his side. Point for right.");
                 // TODO call the other micro service
                 return;
             } else if(queue[i].leftOrRight == "right") {
                 // go on
                 state = 2;
-                console.log("DEBUG: Player left played the ball onto the other side. We continue.\n");
+                console.log("DEBUG: Player left played the ball onto the other side. We continue.");
             }
         }
     }    

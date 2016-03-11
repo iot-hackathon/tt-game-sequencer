@@ -11,6 +11,8 @@ var server = "unset";
 var gameSequenceFinished = "false";
 var http = require('http');
 var request = require('request');
+var wouldBeWinner = "not set";
+
 
 /*==============================================================================
  * Exports
@@ -27,10 +29,32 @@ module.exports = {
 // resetQueue
 // *****
 function resetQueue(player) {
+    
+    // Logic to evaluate the open sequence
+    if(gameSequenceFinished == false) {
+        console.log("DEBUG: Previous game sequence did not come to a conclusion. Count a point for " + wouldBeWinner);
+        // Post call to tt-judge
+        request({
+            url: 'http://ttj.mybluemix.net/point',
+            method: 'POST', 
+            json: {
+                "player" : wouldBeWinner,
+                "pointType" : "not sure"
+            }
+        }, function(error, response, body) {
+            if(error) {
+                console.log("Error: " + error);
+            } else {
+                console.log(response.statusCode, body);
+            }
+        });
+    }    
     console.log("DEBUG: resetQueue and setting server to " + player);
     queue = [];
     server = player;
+    console.log("GAME: Opening game sequence for next rally.");
     gameSequenceFinished = false;
+    wouldBeWinner = "not set";
 }
 
 // *****
@@ -110,7 +134,9 @@ function evaluator() {
             if(queue[i].leftOrRight == "left" && server == "left") {
                 state = 1;
                 // go on
-                console.log("DEBUG: Left player served and played to left side first. We continue.");
+                wouldBeWinner = "right";
+                console.log("DEBUG: Left player served and played to left side first. We continue. Would be winner is " + wouldBeWinner);
+                
             } else if(queue[i].leftOrRight == "right" && server == "left") {
                 // point for right. Exit
                 console.log("DEBUG: Left player served and played directly to the right side. Point for player right.");
@@ -154,9 +180,10 @@ function evaluator() {
             } else if(queue[i].leftOrRight == "right" && server == "right") {
                 state = 1;
                 // go on
-                console.log("DEBUG: Right player served and played to right side first. We continue.");
-            }             
-        } 
+                wouldBeWinner = "left";
+                console.log("DEBUG: Right player served and played to right side first. We continue. Would be winner is " + wouldBeWinner);
+            }
+        }
         // State 1: Player hit his side first
         else if (state === 1) {
 
@@ -183,11 +210,13 @@ function evaluator() {
             } else if(queue[i].leftOrRight == "right" && server == "left") {
                 // go on
                 state = 2;
-                console.log("DEBUG: Left player played a correct serve. We continue.");
+                wouldBeWinner = "left";
+                console.log("DEBUG: Left player played a correct serve. We continue. Would be winner is " + wouldBeWinner);
             } else if(queue[i].leftOrRight == "left" && server == "right") {
                 // go on
                 state = 3;
-                console.log("DEBUG: Right player played a correct serve. We continue.");
+                wouldBeWinner = "right";
+                console.log("DEBUG: Right player played a correct serve. We continue. Would be winner is " + wouldBeWinner);
             } else if(queue[i].leftOrRight == "right" && server == "right") {
                 // point for left. Exit
                 console.log("DEBUG: Right player hit his side twice. Point for player left.");
@@ -235,7 +264,8 @@ function evaluator() {
             } else if(queue[i].leftOrRight == "left") {
                 // go on
                 state = 3;
-                console.log("DEBUG: Player right played the ball onto the other side. We continue.");
+                wouldBeWinner = "right";
+                console.log("DEBUG: Player right played the ball onto the other side. We continue. Would be winner is " + wouldBeWinner);
             }
         }
         // State 3: Normal game mode. Next player to hit is left
@@ -263,7 +293,8 @@ function evaluator() {
             } else if(queue[i].leftOrRight == "right") {
                 // go on
                 state = 2;
-                console.log("DEBUG: Player left played the ball onto the other side. We continue.");
+                wouldBeWinner = "left";
+                console.log("DEBUG: Player left played the ball onto the other side. We continue. Would be winner is: " + wouldBeWinner);
             }
         }
     }    

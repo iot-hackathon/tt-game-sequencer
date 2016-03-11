@@ -16,7 +16,8 @@
     "express": "4.13.x",
     "cfenv": "1.0.x",
     "body-parser" : "latest",
-    "http" : "latest"
+    "http" : "latest",
+    "request" : "latest"
   },
   "scripts" : {
     "start" : "node index.js"

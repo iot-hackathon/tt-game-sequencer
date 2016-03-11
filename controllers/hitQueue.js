@@ -41,10 +41,10 @@ function newHit(ttHit) {
 
     console.log("DEBUG: Entering newHit\n");
 
-    console.log("DEBUG: Pushing into queue. queue has " + queue.length + " elements.");
+    console.log("DEBUG: Pushing into queue. queue has " + queue.length + " elements.\n");
     queue.push(ttHit);
 
-    console.log("DEBUG: Sorting the queue. The queue has " + queue.length + " elements.");
+    console.log("DEBUG: Sorting the queue. The queue has " + queue.length + " elements.\n");
     queue.sort(hitComparator);
 
     //console.log("DEBUG: Printing the queue: " + JSON.stringify(queue, null, 4));
@@ -53,9 +53,27 @@ function newHit(ttHit) {
 
 
 function evaluateQueueStability() {
-    // auswerten ob die queue gerade stabil ist
 
-    // spielzug auswertung
+    // Check whether the queue contains gaps
+    var initialCount = queue[0].seqCount;
+    console.log("DEBUG: Currently the queue starts at the offset of " + initialCount);
+
+    for(var i = 1; i<queue.length; i++) {
+        var nextCount = initialCount + i;
+        if(!(nextCount == queue[i].seqCount)) {
+            console.log("DEBUG: Expected the element at position " + i + " to have the sequence count of " + nextCount + " but found " + queue[i].seqCount +  " instead.\n");
+            wellOrderd = false;
+            return;
+        } else {
+            console.log("DEBUG: Sequence is ordered so far…\n");
+        }
+    }
+
+    console.log("DEBUG: Sequence is completely ordered, calling the evaluator\n");
+
+    evaluator();
+    console.log("DEBUG: Test statement for async state of call. Should be called immediately\n");
+    
 }
 
 

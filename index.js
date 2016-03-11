@@ -16,13 +16,19 @@ var express = require('express');                     // Express Middleware
 var cfenv = require('cfenv');                         // Cloud Foundry Environment
 var bodyParser = require('body-parser');              // Body Parser to get that POST data from requests
 var hitQueue = require('./controllers/hitQueue.js');  // Hit Queue
+var cors = require('cors');                           // CORS
 
 // Create Express application
 var app = express();
 
+// Allow CORS
+app.use(cors());
+
 // Parser for JSON input
 var jsonParser = bodyParser.json();
 app.use(jsonParser);
+
+
 
 // Set the port of the application. Default to 8080 if it cannot be retrieved from cfenv.
 var appEnv = cfenv.getAppEnv();
@@ -53,12 +59,14 @@ app.post("/hit", jsonParser, function(req, res) {
     console.log("DEBUG: Post /hit called");
     if(!req.body) {
         console.log("DEBUG: Did not find any body in request.");
-        res.status(409).send("Request did not contain necessary data");
+        res.status(400).send("Request did not contain necessary data");
+        return;
     }
 
     if(!req.is('json')) {
         console.log("DEBUG: Request does not contain json data");
-        res.status(409).send("Request does not contain json data");
+        res.status(400).send("Request does not contain json data");
+        return;
     }
 
     console.log("DEBUG: Incoming request at Post /hit called with request: " + JSON.stringify(req.body));
@@ -130,12 +138,14 @@ app.post("/servicePrepare", jsonParser, function(req, res) {
 
     if(!req.body) {
         console.log("DEBUG: Did not find any body in request.");
-        res.status(409).send("Request did not contain necessary data");
+        res.status(400).send("Request did not contain necessary data");
+        return;
     }
 
     if(!req.is('json')) {
         console.log("DEBUG: Request does not contain json data");
-        res.status(409).send("Request does not contain json data");
+        res.status(400).send("Request does not contain json data");
+        return;
     }
 
     console.log("DEBUG: Incoming request at Post /servicePrepare called with request: " + JSON.stringify(req.body));

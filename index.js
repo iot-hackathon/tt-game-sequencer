@@ -1,5 +1,5 @@
 /* Main application file for the Table Tennis Game Sequencer (ttgs)
- * 
+ *
  * The ttgs receives events from the game and evaluates what happened. It will send this data to the Table Tennis Judge for evaluation
  *
  * © 2016 IBM Corp.
@@ -38,7 +38,7 @@ console.log("DEBUG: Server Port is " + serverPort);
 // ==================================
 
 // *************
-// GET    / 
+// GET    /
 // *************
 app.get('/', function(req, res) {
   console.log("DEBUG: Main page called (get on /)");
@@ -59,7 +59,7 @@ app.post("/hit", jsonParser, function(req, res) {
     if(!req.is('json')) {
         console.log("DEBUG: Request does not contain json data");
         res.status(409).send("Request does not contain json data");
-    }    
+    }
 
     console.log("DEBUG: Incoming request at Post /hit called with request: " + JSON.stringify(req.body));
 
@@ -86,11 +86,11 @@ app.post("/hit", jsonParser, function(req, res) {
             ttHit.hitSource = req.body.hitSource;
         }
         if(req.body.leftOrRight) {
-            console.log("DEBUG: Event " + req.body.seqCount + " also includes the optional parameter 'leftOrRight'\n");
+            console.log("DEBUG: Event " + req.body.leftOrRight + " also includes the optional parameter 'leftOrRight'\n");
             ttHit.leftOrRight = req.body.leftOrRight;
         }
         if(req.body.tableField) {
-            console.log("DEBUG: Event " + req.body.seqCount + " also includes the optional parameter 'tableField'\n");
+            console.log("DEBUG: Event " + req.body.tableField + " also includes the optional parameter 'tableField'\n");
             ttHit.tableField = req.body.tableField;
         }
 
@@ -145,5 +145,3 @@ app.listen(serverPort, '0.0.0.0', function() {
     // print a message when the server starts listening
     console.log("Server starting on " + appEnv.url);
 });
-
-

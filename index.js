@@ -157,7 +157,7 @@ app.post("/servicePrepare", jsonParser, function(req, res) {
             console.log("DEBUG: Event " + ttServicePrepare.triggerTime + " also includes the optional parameter 'timeTrigger'\n");
         }
         // empty queue
-        hitQueue.resetQueue();
+        hitQueue.resetQueue(ttServicePrepare.playerToServe);
         console.log("DEBUG: Returning with 200");
         res.status(200).send();
         return;

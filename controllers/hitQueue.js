@@ -25,9 +25,10 @@ module.exports = {
 // *****
 // resetQueue
 // *****
-function resetQueue() {
-    console.log("DEBUG: resetQueue");
+function resetQueue(player) {
+    console.log("DEBUG: resetQueue and setting server to " + player);
     queue = [];
+    server = player;
 }
 
 // *****

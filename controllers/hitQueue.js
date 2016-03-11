@@ -74,22 +74,22 @@ function hitComparator(hitA, hitB) {
 // Include a new hit in the queue and trigger follow-up events
 // *****
 function newHit(ttHit) {
-    console.log("DEBUG: Entering newHit");
+    //console.log("DEBUG: Entering newHit");
 
     if(gameSequenceFinished) {
-        console.log("DEBUG: Game sequence is already finished. Ignoring this hit event.");
+        console.log("~~ GAME ~~: Game sequence is already finished. Ignoring this hit event.");
         return;
     }
 
-    console.log("DEBUG: Pushing into queue. queue has " + queue.length + " elements.");
+    //console.log("DEBUG: Pushing into queue. queue has " + queue.length + " elements.");
     queue.push(ttHit);
 
-    console.log("DEBUG: Sorting the queue. The queue has " + queue.length + " elements.");
+    //console.log("DEBUG: Sorting the queue. The queue has " + queue.length + " elements.");
     queue.sort(hitComparator);
 
-    console.log("DEBUG: Check if the queue is stable enough for evaluation.");
+    //console.log("DEBUG: Check if the queue is stable enough for evaluation.");
     evaluateQueueStability();
-    console.log("DEBUG: Leaving newHit");
+    //console.log("DEBUG: Leaving newHit");
 
 }
 
@@ -114,16 +114,16 @@ function evaluateQueueStability() {
     // }
 
     // console.log("DEBUG: Sequence is completely ordered, calling the evaluator");
-    console.log("DEBUG: Removed sequence Counter, no evaluation done.");
+    //console.log("DEBUG: Removed sequence Counter, no evaluation done.");
     evaluator();
-    console.log("DEBUG: Test statement for async state of call. Should be called immediately");
+    //console.log("DEBUG: Test statement for async state of call. Should be called immediately");
 }
 
 // *****
 // Check the queue whether it contains events which lead to a complete game sequence 
 // *****
 function evaluator() {
-    console.log("DEBUG: Entering evaluator");
+    // console.log("DEBUG: Entering evaluator");
 
     var state = 0;
 
@@ -135,11 +135,11 @@ function evaluator() {
                 state = 1;
                 // go on
                 wouldBeWinner = "right";
-                console.log("DEBUG: Left player served and played to left side first. We continue. Would be winner is " + wouldBeWinner);
+                console.log("~~ GAME ~~: Left player served and played to left side first. We continue. Would be winner is " + wouldBeWinner);
                 
             } else if(queue[i].leftOrRight == "right" && server == "left") {
                 // point for right. Exit
-                console.log("DEBUG: Left player served and played directly to the right side. Point for player right.");
+                console.log("~~ GAME ~~: Left player served and played directly to the right side. Point for player right.");
                 // Post call to tt-judge
                 request({
                     url: 'http://ttj.mybluemix.net/point',
@@ -152,14 +152,14 @@ function evaluator() {
                     if(error) {
                         console.log("Error: " + error);
                     } else {
-                        console.log(response.statusCode, body);
+                        //console.log(response.statusCode, body);
                     }
                 });
                 gameSequenceFinished = true;
                 return;
             } else if(queue[i].leftOrRight == "left" && server == "right") {
                 // point for left. Exit
-                console.log("DEBUG: Right player served and played directly to the left side. Point for player left.");
+                console.log("~~ GAME ~~: Right player served and played directly to the left side. Point for player left.");
                 // Post call to tt-judge
                 request({
                     url: 'http://ttj.mybluemix.net/point',
@@ -172,7 +172,7 @@ function evaluator() {
                     if(error) {
                         console.log("Error: " + error);
                     } else {
-                        console.log(response.statusCode, body);
+                        //console.log(response.statusCode, body);
                     }
                 });
                 gameSequenceFinished = true;
@@ -181,7 +181,7 @@ function evaluator() {
                 state = 1;
                 // go on
                 wouldBeWinner = "left";
-                console.log("DEBUG: Right player served and played to right side first. We continue. Would be winner is " + wouldBeWinner);
+                console.log("~~ GAME ~~: Right player served and played to right side first. We continue. Would be winner is " + wouldBeWinner);
             }
         }
         // State 1: Player hit his side first
@@ -189,7 +189,7 @@ function evaluator() {
 
             if(queue[i].leftOrRight == "left" && server == "left") {
                 // point for right. Exit
-                console.log("DEBUG: Left player hit his side twice. Point for player right.");
+                console.log("~~ GAME ~~: Left player hit his side twice. Point for player right.");
                 // Post call to tt-judge
                 request({
                     url: 'http://ttj.mybluemix.net/point',
@@ -202,7 +202,7 @@ function evaluator() {
                     if(error) {
                         console.log("Error: " + error);
                     } else {
-                        console.log(response.statusCode, body);
+                        //console.log(response.statusCode, body);
                     }
                 });
                 gameSequenceFinished = true;
@@ -211,15 +211,15 @@ function evaluator() {
                 // go on
                 state = 2;
                 wouldBeWinner = "left";
-                console.log("DEBUG: Left player played a correct serve. We continue. Would be winner is " + wouldBeWinner);
+                console.log("~~ GAME ~~: Left player played a correct serve. We continue. Would be winner is " + wouldBeWinner);
             } else if(queue[i].leftOrRight == "left" && server == "right") {
                 // go on
                 state = 3;
                 wouldBeWinner = "right";
-                console.log("DEBUG: Right player played a correct serve. We continue. Would be winner is " + wouldBeWinner);
+                console.log("~~ GAME ~~: Right player played a correct serve. We continue. Would be winner is " + wouldBeWinner);
             } else if(queue[i].leftOrRight == "right" && server == "right") {
                 // point for left. Exit
-                console.log("DEBUG: Right player hit his side twice. Point for player left.");
+                console.log("~~ GAME ~~: Right player hit his side twice. Point for player left.");
                 // Post call to tt-judge
                 request({
                     url: 'http://ttj.mybluemix.net/point',
@@ -232,7 +232,7 @@ function evaluator() {
                     if(error) {
                         console.log("Error: " + error);
                     } else {
-                        console.log(response.statusCode, body);
+                        //console.log(response.statusCode, body);
                     }
                 });
                 gameSequenceFinished = true;
@@ -243,7 +243,7 @@ function evaluator() {
         else if(state === 2) {
             if(queue[i].leftOrRight == "right") {
                 // point for left. Exit.
-                console.log("DEBUG: Player right played the ball onto his side. Point for left.");
+                console.log("~~ GAME ~~: Player right played the ball onto his side. Point for left.");
                 // Post call to tt-judge
                 request({
                     url: 'http://ttj.mybluemix.net/point',
@@ -256,7 +256,7 @@ function evaluator() {
                     if(error) {
                         console.log("Error: " + error);
                     } else {
-                        console.log(response.statusCode, body);
+                        //console.log(response.statusCode, body);
                     }
                 });
                 gameSequenceFinished = true;
@@ -265,14 +265,14 @@ function evaluator() {
                 // go on
                 state = 3;
                 wouldBeWinner = "right";
-                console.log("DEBUG: Player right played the ball onto the other side. We continue. Would be winner is " + wouldBeWinner);
+                console.log("~~ GAME ~~: Player right played the ball onto the other side. We continue. Would be winner is " + wouldBeWinner);
             }
         }
         // State 3: Normal game mode. Next player to hit is left
         else if(state === 3) {
             if(queue[i].leftOrRight == "left") {
                 // point for right. Exit.
-                console.log("DEBUG: Player left played the ball onto his side. Point for right.");
+                console.log("~~ GAME ~~: Player left played the ball onto his side. Point for right.");
                 // Post call to tt-judge
                 request({
                     url: 'http://ttj.mybluemix.net/point',
@@ -285,7 +285,7 @@ function evaluator() {
                     if(error) {
                         console.log("Error: " + error);
                     } else {
-                        console.log(response.statusCode, body);
+                        //console.log(response.statusCode, body);
                     }
                 });
                 gameSequenceFinished = true;
@@ -294,7 +294,7 @@ function evaluator() {
                 // go on
                 state = 2;
                 wouldBeWinner = "left";
-                console.log("DEBUG: Player left played the ball onto the other side. We continue. Would be winner is: " + wouldBeWinner);
+                console.log("~~ GAME ~~: Player left played the ball onto the other side. We continue. Would be winner is: " + wouldBeWinner);
             }
         }
     }    

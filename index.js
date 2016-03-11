@@ -48,7 +48,7 @@ console.log("DEBUG: Server Port is " + serverPort);
 // *************
 app.get('/', function(req, res) {
   console.log("DEBUG: Main page called (get on /)");
-  res.send('<h1>Kizomba Gang rules!</h1>');
+  res.send('<h1>Judge Pong</h1><p>… knows what happens at table tennis</p>');
 });
 
 
@@ -56,29 +56,25 @@ app.get('/', function(req, res) {
 // POST   /hit
 // *************
 app.post("/hit", jsonParser, function(req, res) {
-    console.log("DEBUG: Post /hit called");
+    //console.log("DEBUG: Post /hit called");
     if(!req.body) {
-        console.log("DEBUG: Did not find any body in request.");
+        //console.log("DEBUG: Did not find any body in request.");
         res.status(400).send("Request did not contain necessary data");
         return;
     }
 
     if(!req.is('json')) {
-        console.log("DEBUG: Request does not contain json data");
+        //console.log("DEBUG: Request does not contain json data");
         res.status(400).send("Request does not contain json data");
         return;
     }
 
-    console.log("DEBUG: Incoming request at Post /hit called with request: " + JSON.stringify(req.body));
-
-
-
+    console.log("__INCOMING__: /hit on: " + req.body.leftOrRight);
     // Check whether the incoming JSON conforms to the required format
     if(req.body.hitTime && req.body.seqCount >= 0 && req.body.sourceSensor) {
 
         // Minimal data is available for now, start building the JSON object
-        console.log("DEBUG: Received event with hitTime, seqCount, sourceSensor\n");
-
+        //console.log("DEBUG: Received event with hitTime, seqCount, sourceSensor\n");
         var ttHit = {
             "hitTime" : req.body.hitTime,
             "seqCount" : req.body.seqCount,
@@ -90,37 +86,28 @@ app.post("/hit", jsonParser, function(req, res) {
 
         // Check for optional properties
         if(req.body.hitSource) {
-            console.log("DEBUG: Event " + req.body.seqCount + " also includes the optional parameter 'hitSource'\n");
+            //console.log("DEBUG: Event " + req.body.seqCount + " also includes the optional parameter 'hitSource'\n");
             ttHit.hitSource = req.body.hitSource;
         }
         if(req.body.leftOrRight) {
-            console.log("DEBUG: Event " + req.body.leftOrRight + " also includes the optional parameter 'leftOrRight'\n");
+            //console.log("DEBUG: Event " + req.body.leftOrRight + " also includes the optional parameter 'leftOrRight'\n");
             ttHit.leftOrRight = req.body.leftOrRight;
         }
         if(req.body.tableField) {
-            console.log("DEBUG: Event " + req.body.tableField + " also includes the optional parameter 'tableField'\n");
+            //console.log("DEBUG: Event " + req.body.tableField + " also includes the optional parameter 'tableField'\n");
             ttHit.tableField = req.body.tableField;
         }
-
 
         // Asynchronously call the "insert into queue" function to store the event
         hitQueue.newHit(ttHit);
 
-        // Save event to queue
-
-        // Analyze the Queue and Decide what happened
-
-        // Inconclusive -> wait for other events
-
-        // Conclusive -> Send conclusion and delete the queue
-
-        console.log("DEBUG: Returning with 200");
+        //console.log("DEBUG: Returning with 200");
         res.status(200).send();
         return;
 
     } else {
         // Input is not correct, deliver an error
-        console.log("DEBUG: Invalid JSON or no JSON supplied");
+        //console.log("DEBUG: Invalid JSON or no JSON supplied");
         res.status(400).send("The supplied JSON does not conform to the expected object for declaring a 'hit'\n");
         return;
     }
@@ -137,20 +124,18 @@ app.post("/servicePrepare", jsonParser, function(req, res) {
     console.log("DEBUG: Post /servicePrepare called");
 
     if(!req.body) {
-        console.log("DEBUG: Did not find any body in request.");
+        //console.log("DEBUG: Did not find any body in request.");
         res.status(400).send("Request did not contain necessary data");
         return;
     }
 
     if(!req.is('json')) {
-        console.log("DEBUG: Request does not contain json data");
+        //console.log("DEBUG: Request does not contain json data");
         res.status(400).send("Request does not contain json data");
         return;
     }
 
-    console.log("DEBUG: Incoming request at Post /servicePrepare called with request: " + JSON.stringify(req.body));
-
-
+    console.log("__INCOMING__: /servicePrepare on " + req.body.tableLeftRightPlayer);
 
     // Check whether the incoming JSON conforms to the required format
     if(req.body.tableLeftRightPlayer) {
@@ -160,21 +145,21 @@ app.post("/servicePrepare", jsonParser, function(req, res) {
             "timeTrigger": req.body.timeTrigger
         }
 
-        console.log("DEBUG: Received event with tableLeftRightPlayer: " + ttServicePrepare.playerToServe + "\n"  );
+        //console.log("DEBUG: Received event with tableLeftRightPlayer: " + ttServicePrepare.playerToServe + "\n"  );
 
         // Check for optional properties
         if(req.body.timeTrigger) {
-            console.log("DEBUG: Event " + ttServicePrepare.triggerTime + " also includes the optional parameter 'timeTrigger'\n");
+            //console.log("DEBUG: Event " + ttServicePrepare.triggerTime + " also includes the optional parameter 'timeTrigger'\n");
         }
         // empty queue
         hitQueue.resetQueue(ttServicePrepare.playerToServe);
-        console.log("DEBUG: Returning with 200");
+        //console.log("DEBUG: Returning with 200");
         res.status(200).send();
         return;
 
     } else {
         // Input is not correct, deliver an error
-        console.log("DEBUG: Invalid JSON or no JSON supplied");
+        //console.log("DEBUG: Invalid JSON or no JSON supplied");
         res.status(400).send("The supplied JSON does not conform to the expected object for declaring a 'hit'\n");
         return;
     }

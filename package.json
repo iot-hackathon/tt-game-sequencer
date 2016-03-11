@@ -17,7 +17,8 @@
     "cfenv": "1.0.x",
     "body-parser" : "latest",
     "http" : "latest",
-    "request" : "latest"
+    "request" : "latest",
+    "cors" : "latest"
   },
   "scripts" : {
     "start" : "node index.js"

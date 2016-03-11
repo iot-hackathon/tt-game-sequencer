@@ -17,9 +17,18 @@ var server;
  */
 module.exports = {
 
-    "newHit" : newHit
+    "newHit" : newHit,
+    "resetQueue" : resetQueue
 };
 
+
+// *****
+// resetQueue
+// *****
+function resetQueue() {
+    console.log("DEBUG: resetQueue");
+    queue = [];
+}
 
 // *****
 // Compare Function for hits (should allow sort an array of hits by sequence Count)
@@ -35,7 +44,7 @@ function hitComparator(hitA, hitB) {
  */
 
 // *****
-// Include a new hit in the queue and trigger follow-up events 
+// Include a new hit in the queue and trigger follow-up events
 // *****
 function newHit(ttHit) {
 
@@ -160,6 +169,4 @@ function evaluator() {
         }
     }    
 }
-
-
 

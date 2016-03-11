@@ -127,7 +127,51 @@ app.post("/hit", jsonParser, function(req, res) {
 // *************
 app.post("/servicePrepare", jsonParser, function(req, res) {
     console.log("DEBUG: Post /servicePrepare called");
-    res.status(200).send();
+
+    if(!req.body) {
+        console.log("DEBUG: Did not find any body in request.");
+        res.status(409).send("Request did not contain necessary data");
+    }
+
+    if(!req.is('json')) {
+        console.log("DEBUG: Request does not contain json data");
+        res.status(409).send("Request does not contain json data");
+    }
+
+    console.log("DEBUG: Incoming request at Post /servicePrepare called with request: " + JSON.stringify(req.body));
+
+
+
+    // Check whether the incoming JSON conforms to the required format
+    if(req.body.tableLeftRightPlayer) {
+        // Minimal data is available for now, start building the JSON object
+        var ttServicePrepare = {
+            "playerToServer": req.body.tableLeftRightPlayer,
+            "timeTrigger": req.body.timeTrigger
+        }
+
+        console.log("DEBUG: Received event öwith tableLeftRightPlayer: " + ttServicePrepare.playerToServe + "\n"  );
+
+        // Check for optional properties
+        if(req.body.timeTrigger) {
+            console.log("DEBUG: Event " + ttServicePrepare.triggerTime + " also includes the optional parameter 'timeTrigger'\n");
+        }
+        // empty queue
+        hitQueue.resetQueue();
+        console.log("DEBUG: Returning with 200");
+        res.status(200).send();
+        return;
+
+    } else {
+        // Input is not correct, deliver an error
+        console.log("DEBUG: Invalid JSON or no JSON supplied");
+        res.status(400).send("The supplied JSON does not conform to the expected object for declaring a 'hit'\n");
+        return;
+    }
+
+    // TODO decide what to do in the very end
+    res.status(400).send("Reached final branch, probably an error\n");
+    // res.status(200).send();
     return;
 });
 

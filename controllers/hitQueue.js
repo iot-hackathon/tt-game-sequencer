@@ -32,7 +32,7 @@ function resetQueue(player) {
     
     // Logic to evaluate the open sequence
     if(gameSequenceFinished == false) {
-        console.log("DEBUG: Previous game sequence did not come to a conclusion. Count a point for " + wouldBeWinner);
+        console.log("~~ GAME ~~: Previous game sequence did not come to a conclusion. Count a point for " + wouldBeWinner);
         // Post call to tt-judge
         request({
             url: 'http://ttj.mybluemix.net/point',
@@ -49,10 +49,10 @@ function resetQueue(player) {
             }
         });
     }    
-    console.log("DEBUG: resetQueue and setting server to " + player);
+    //console.log("DEBUG: resetQueue and setting server to " + player);
     queue = [];
     server = player;
-    console.log("GAME: Opening game sequence for next rally.");
+    console.log("\n\n\n~~ GAME ~~: Opening game sequence for next rally.\n\n\n");
     gameSequenceFinished = false;
     wouldBeWinner = "not set";
 }

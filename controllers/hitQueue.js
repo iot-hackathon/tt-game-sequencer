@@ -77,7 +77,6 @@ function evaluateQueueStability() {
         var nextCount = initialCount + i;
         if(!(nextCount == queue[i].seqCount)) {
             console.log("DEBUG: Expected the element at position " + i + " to have the sequence count of " + nextCount + " but found " + queue[i].seqCount +  " instead.");
-            wellOrderd = false;
             return;
         } else {
             console.log("DEBUG: Sequence is ordered so far…");

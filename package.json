@@ -15,7 +15,8 @@
     "connect": "^3.2.0",
     "express": "4.13.x",
     "cfenv": "1.0.x",
-    "body-parser" : "latest"
+    "body-parser" : "latest",
+    "http" : "latest"
   },
   "scripts" : {
     "start" : "node index.js"

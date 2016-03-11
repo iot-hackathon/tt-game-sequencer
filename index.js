@@ -150,7 +150,7 @@ app.post("/servicePrepare", jsonParser, function(req, res) {
             "timeTrigger": req.body.timeTrigger
         }
 
-        console.log("DEBUG: Received event öwith tableLeftRightPlayer: " + ttServicePrepare.playerToServe + "\n"  );
+        console.log("DEBUG: Received event with tableLeftRightPlayer: " + ttServicePrepare.playerToServe + "\n"  );
 
         // Check for optional properties
         if(req.body.timeTrigger) {

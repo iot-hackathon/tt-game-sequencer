@@ -122,6 +122,15 @@ app.post("/hit", jsonParser, function(req, res) {
 });
 
 
+// *************
+// POST   /servicePrepare
+// *************
+app.post("/servicePrepare", jsonParser, function(req, res) {
+    console.log("DEBUG: Post /servicePrepare called");
+    res.status(200).send();
+    return;
+});
+
 // ==================================
 //          Express Routes
 // ==================================
